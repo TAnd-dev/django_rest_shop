@@ -1,3 +1,11 @@
+$sizes: (
+	'xs': 320px,
+	'sm': 576px,
+	'md': 768px,
+	'lg': 992px,
+	'xl': 1200px,
+);
+
 .header--desktop {
 	font-size: 14px;
 	line-height: 20px;
@@ -46,10 +54,12 @@
 }
 
 .header-top__menu-item,
-.city-select {
+.city-select,
+.icon-location {
 	&:hover,
 	&:focus {
 		color: #fc8507;
+		fill: #fc8507;
 	}
 }
 
@@ -70,13 +80,20 @@
 	display: flex;
 	min-height: 100%;
 }
-.city-select__img-location {
-	margin-right: 13px;
-}
+// .city-select__img-location {
+// 	margin-right: 13px;
+// }
 
 .city-select__text {
+	margin-left: 13px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	max-width: 200px;
+}
+
+.profile-list__text {
+	@media (max-width: map-get($sizes, 'xl')) {
+		display: none;
+	}
 }
