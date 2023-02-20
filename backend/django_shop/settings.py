@@ -12,14 +12,20 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+from config import load_config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-j(dvqmpfu^xn55ssneq(g14vhc5972_8!*23spjl!-vv_!xs#4'
+
+CONFIG = load_config()
+
+SECRET_KEY = CONFIG.set.secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,11 +86,11 @@ WSGI_APPLICATION = 'django_shop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_rest_shop',
-        'USER': 'postgres',
-        'PASSWORD': 'aa680680',
-        'HOST': 'localhost',
-        'POST': '5432',
+        'NAME': CONFIG.db.database,
+        'USER': CONFIG.db.user,
+        'PASSWORD': CONFIG.db.password,
+        'HOST': CONFIG.db.host,
+        'POST': CONFIG.db.port,
     }
 }
 
@@ -146,6 +152,3 @@ CORS_ALLOW_METHODS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOW_CREDENTIALS = True
-
-# CORS_ALLOW_ORIGINS = ['https://pypi.org/project/django-cors-headers/']
