@@ -1,5 +1,6 @@
 from django.db.models import Avg
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
+from rest_framework import permissions
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -20,7 +21,7 @@ class ItemListView(ListAPIView):
     Displaying a list of items
     """
 
-    queryset = Item.objects.all().annotate(avg_rate=Avg('review__rate')).all()
+    queryset = Item.objects.annotate(avg_rate=Avg('review__rate')).all()
     serializer_class = ItemListSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ItemFilter
@@ -39,6 +40,7 @@ class ReviewCreateView(CreateAPIView):
     Adding a review
     """
     serializer_class = ReviewCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
