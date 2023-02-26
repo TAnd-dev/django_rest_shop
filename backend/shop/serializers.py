@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
-from .models import Item, Review, ProductGallery, Category
+from .models import Item, Review, ProductGallery, Category, Favorite
 
 
 class RecursiveSerializer(serializers.Serializer):
     """
     Return children of model
     """
+
     def to_representation(self, value):
         serializer = self.parent.parent.__class__(value, context=self.context)
         return serializer.data
@@ -16,6 +17,7 @@ class FilterCategorySerializer(serializers.ListSerializer):
     """
     Return only categories without parents
     """
+
     def to_representation(self, data):
         data = data.filter(parent=None)
         return super().to_representation(data)
@@ -79,11 +81,10 @@ class ItemListSerializer(serializers.ModelSerializer):
     """
     category = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     image = ImageSerializer(many=True)
-    avg_rate = serializers.IntegerField()
 
     class Meta:
         model = Item
-        fields = ('title', 'description', 'price', 'avg_rate', 'image', 'category',)
+        fields = ('title', 'description', 'price', 'get_avg_rate', 'image', 'category')
 
 
 class ItemDetailSerializer(serializers.ModelSerializer):
@@ -93,11 +94,10 @@ class ItemDetailSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     review = ReviewSerializer(many=True)
     image = ImageSerializer(many=True)
-    avg_rate = serializers.IntegerField()
 
     class Meta:
         model = Item
-        fields = ('title', 'description', 'price', 'avg_rate', 'category', 'image', 'review')
+        fields = ('title', 'description', 'price', 'get_avg_rate', 'category', 'image', 'review')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -110,3 +110,13 @@ class CategorySerializer(serializers.ModelSerializer):
         list_serializer_class = FilterCategorySerializer
         model = Category
         fields = ('name', 'children')
+
+
+class FavoriteCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = ('item',)
+
+
+class FavoriteSerializer(FavoriteCreateSerializer):
+    item = ItemListSerializer()
