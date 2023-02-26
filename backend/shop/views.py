@@ -4,12 +4,23 @@ from rest_framework import permissions
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Item
-from .serializers import ItemListSerializer, ItemDetailSerializer, ReviewCreateSerializer
+from .models import Item, Category
+from .serializers import ItemListSerializer, ItemDetailSerializer, ReviewCreateSerializer, CategorySerializer
 
 
 class ItemFilter(filters.FilterSet):
+    """
+    Item filters
+    """
     price = filters.RangeFilter()
+
+    o = filters.OrderingFilter(
+        fields=(
+            ('price', 'price'),
+            ('review__product', 'review'),
+            ('avg_rate', 'rate'),
+        )
+    )
 
     class Meta:
         model = Item
@@ -44,3 +55,11 @@ class ReviewCreateView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class CategoriesView(ListAPIView):
+    """
+    Displaying categories
+    """
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer

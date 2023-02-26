@@ -1,6 +1,24 @@
 from rest_framework import serializers
 
-from .models import Item, Review, ProductGallery
+from .models import Item, Review, ProductGallery, Category
+
+
+class RecursiveSerializer(serializers.Serializer):
+    """
+    Return children of model
+    """
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
+
+
+class FilterCategorySerializer(serializers.ListSerializer):
+    """
+    Return only categories without parents
+    """
+    def to_representation(self, data):
+        data = data.filter(parent=None)
+        return super().to_representation(data)
 
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
@@ -80,3 +98,15 @@ class ItemDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ('title', 'description', 'price', 'avg_rate', 'category', 'image', 'review')
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    """
+    Displaying categories
+    """
+    children = RecursiveSerializer(many=True)
+
+    class Meta:
+        list_serializer_class = FilterCategorySerializer
+        model = Category
+        fields = ('name', 'children')
