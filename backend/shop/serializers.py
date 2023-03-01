@@ -25,7 +25,7 @@ class FilterCategorySerializer(serializers.ListSerializer):
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
     """
-    Add a review
+    Serializer for creating a review
     """
 
     def create(self, validate_data):
@@ -44,7 +44,7 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     """
-    Displaying a review
+    Serializer for displaying a review
     """
 
     author = serializers.SlugRelatedField(slug_field='username', read_only=True, many=False)
@@ -56,7 +56,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class ImageListSerializer(serializers.ListSerializer):
     """
-    Displaying a list of images
+    Serializer to return a list of images
     """
 
     def to_representation(self, data):
@@ -65,7 +65,7 @@ class ImageListSerializer(serializers.ListSerializer):
 
 class ImageSerializer(serializers.ModelSerializer):
     """
-    Displaying an image
+    Serializer for displaying images
     """
     image = serializers.ImageField()
 
@@ -75,9 +75,9 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = ('image',)
 
 
-class ItemListSerializer(serializers.ModelSerializer):
+class ItemSerializer(serializers.ModelSerializer):
     """
-    Displaying a list of items
+    Serializer for displaying items
     """
     category = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     image = ImageSerializer(many=True)
@@ -87,13 +87,11 @@ class ItemListSerializer(serializers.ModelSerializer):
         fields = ('title', 'description', 'price', 'get_avg_rate', 'image', 'category')
 
 
-class ItemDetailSerializer(serializers.ModelSerializer):
+class ItemDetailSerializer(ItemSerializer):
     """
-    Displaying a detail of items
+    Serializer for displaying a detail of items
     """
-    category = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     review = ReviewSerializer(many=True)
-    image = ImageSerializer(many=True)
 
     class Meta:
         model = Item
@@ -102,7 +100,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
     """
-    Displaying categories
+    Serializer for displaying categories
     """
     children = RecursiveSerializer(many=True)
 
@@ -112,11 +110,17 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('name', 'children')
 
 
-class FavoriteCreateSerializer(serializers.ModelSerializer):
+class FavoriteSerializer(serializers.ModelSerializer):
+    """
+    Serializer for displaying favorites
+    """
     class Meta:
         model = Favorite
         fields = ('item',)
 
 
-class FavoriteSerializer(FavoriteCreateSerializer):
-    item = ItemListSerializer()
+class FavoriteDetailSerializer(FavoriteSerializer):
+    """
+    Serializer for displaying favorites with details
+    """
+    item = ItemSerializer()
