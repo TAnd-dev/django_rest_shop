@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'djoser',
 
     'shop',
+    'user_profile',
 ]
 
 MIDDLEWARE = [

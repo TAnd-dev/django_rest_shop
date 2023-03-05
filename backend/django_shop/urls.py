@@ -32,6 +32,8 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
 
     path('api/v1/', include('shop.urls')),
+    path('api/v1/', include('user_profile.urls')),
+
     path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 

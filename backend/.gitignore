@@ -4,4 +4,4 @@ venv/
 media/gallery_product/*
 /.env
 /.idea/
-__pycache__/*
+__pycache__/
