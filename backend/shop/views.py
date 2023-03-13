@@ -7,7 +7,7 @@ from .filters import ItemFilter
 from .serializers import (ItemSerializer, ItemDetailSerializer, ReviewCreateSerializer, CategorySerializer,
                           FavoriteDetailSerializer, FavoriteSerializer)
 from .services import (get_items_with_avg_rate, get_all_categories, get_user_favorite_by_item_id,
-                       get_user_favorites_by_user_id)
+                       get_user_favorites_by_user_id, get_item_detail_with_avg_rate)
 
 
 class ItemListView(ListAPIView):
@@ -25,7 +25,7 @@ class ItemDetailView(RetrieveAPIView):
     """
     Displaying a detail of items
     """
-    queryset = get_items_with_avg_rate()
+    queryset = get_item_detail_with_avg_rate()
     serializer_class = ItemDetailSerializer
 
 

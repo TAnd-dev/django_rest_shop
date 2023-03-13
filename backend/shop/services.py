@@ -4,7 +4,16 @@ from shop.models import Item, Category, Favorite
 
 
 def get_items_with_avg_rate() -> QuerySet[Item]:
-    return Item.objects.annotate(avg_rate=Avg('review__rate'))
+    return Item.objects.annotate(
+        avg_rate=Avg('review__rate')). \
+        prefetch_related('category'). \
+        prefetch_related('image')
+
+
+def get_item_detail_with_avg_rate() -> QuerySet[Item]:
+    return get_items_with_avg_rate(). \
+        prefetch_related('review'). \
+        prefetch_related('review__author')
 
 
 def get_all_categories() -> QuerySet[Category]:
@@ -16,6 +25,7 @@ def get_user_favorite_by_item_id(user_id, item_id) -> Favorite:
 
 
 def get_user_favorites_by_user_id(user_id) -> QuerySet[Favorite]:
-    return Favorite.objects.filter(user=user_id)
-
-
+    return Favorite.objects.filter(user=user_id). \
+        annotate(avg_rate=Avg('item__review__rate')). \
+        prefetch_related('item__category'). \
+        prefetch_related('item__image').all()
